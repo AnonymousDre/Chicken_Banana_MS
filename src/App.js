@@ -118,6 +118,7 @@ function App() {
             {tiles.map((tile, index) => (
               <img
                 key={index}
+                //src = {tile.url} //this will show all the images
                  src= {
                    revealedIndexes.includes(index)
                      ? tile.url
