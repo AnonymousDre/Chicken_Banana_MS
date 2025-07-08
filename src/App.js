@@ -1,46 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
 
-/*
-/*function Welcome(props){
-  return <h2>Welcome, {props.name}!</h2>;
-}
-
-function App() {
-    return(
-    <div>
-      <Welcome name ='Andre Thomas'/>
-      <Welcome name ='Marimlsa'/>
-      <Welcome name ='Quizon'/>
-    </div>
-  )
-}
-*/
-
-/*function Counter() {
-  const [count, setCount] = useState(0);
-
-  function handleClick(){
-    setCount(count+1);
-  }
-
-  return(
-    <div>
-      <p>You clicked {count} times.</p>
-      <button onClick={handleClick}>Click me</button>
-    </div>
-  );
-}
-
-function App(){
-  return(
-    <div>
-      <Counter/>
-    </div>
-  );
-}
-*/
-
 const CHICKEN = 'chicken';
 const BANANA = 'banana';
 
@@ -68,7 +28,7 @@ function App() {
   const requiredClicks = tiles.filter(tile => tile.type === playerChoice).length;
 
   const handlePlayerChoice = (choice) => {
-    setPlayerChoice(choice); 
+    setPlayerChoice(choice);
     setClickedIndexes([]);
     setRevealedIndexes([]);
     setStatus('');
@@ -76,16 +36,20 @@ function App() {
   };
 
   const handleTileClick = (index) => {
-     if (status || !playerChoice || clickedIndexes.includes(index) || revealedIndexes.includes(index)) return;
+    if (status || !playerChoice || clickedIndexes.includes(index) || revealedIndexes.includes(index)) return;
 
     const tile = tiles[index];
-    const newRevealed = [...revealedIndexes, index];
-    setRevealedIndexes(newRevealed);
 
     if (tile.type !== playerChoice) {
+      // Reveal all tiles when the player loses
+      const allIndexes = tiles.map((_, i) => i);
+      setRevealedIndexes(allIndexes);
       setStatus('Wrong tile. You lose!');
       return;
     }
+
+    const newRevealed = [...revealedIndexes, index];
+    setRevealedIndexes(newRevealed);
 
     const newClicked = [...clickedIndexes, index];
     setClickedIndexes(newClicked);
@@ -105,7 +69,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>🐔🍌 Chicken Banana Game!</h1>
+      <h1> Chicken🐔 Banana🍌</h1>
       {!playerChoice ? (
         <div className="choice-buttons">
           <button onClick={() => handlePlayerChoice(CHICKEN)}>I'm Chicken Player</button>
@@ -116,18 +80,34 @@ function App() {
           <h3>You are the <strong>{playerChoice.toUpperCase()}</strong> player</h3>
           <div className="grid">
             {tiles.map((tile, index) => (
-              <img
+              <div
                 key={index}
-                //src = {tile.url} //this will show all the images
-                 src= {
-                   revealedIndexes.includes(index)
-                     ? tile.url
-                     : 'https://i.pinimg.com/236x/41/d8/37/41d8375f3237702fed8b274ae68306ab.jpg'
-                 }
-                alt={revealedIndexes.includes(index) ? tile.type : 'Hidden'}
                 className={`square ${clickedIndexes.includes(index) ? 'clicked' : ''}`}
                 onClick={() => handleTileClick(index)}
-              />
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  width: '80px',
+                  height: '80px',
+                  border: '1px solid #ccc',
+                  margin: '5px',
+                  backgroundColor: clickedIndexes.includes(index) ? '#d4ffd4' : '#eee',
+                }}
+              >
+                {revealedIndexes.includes(index) ? (
+                  <img
+                    src={tile.url}
+                    alt={tile.type}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <span>{index + 1}</span>  /* Show tile number starting from 1 */
+                )}
+              </div>
             ))}
           </div>
           <p>{status}</p>
